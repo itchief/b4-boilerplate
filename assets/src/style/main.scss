@@ -1,8 +1,7 @@
-// Variables Bootstrap 4
-
+// Переопределение дефолтных значений переменных Bootstrap 4 и определение своих
 @import "variables";
 
-// SCSS Bootstrap 4
+// Подключение нужных SCSS исходников Bootstrap 4
 @import "../bower_components/bootstrap/scss/functions";
 @import "../bower_components/bootstrap/scss/variables";
 @import "../bower_components/bootstrap/scss/mixins";
@@ -37,3 +36,6 @@
 @import "../bower_components/bootstrap/scss/popover";
 @import "../bower_components/bootstrap/scss/carousel";
 @import "../bower_components/bootstrap/scss/utilities";
+
+// Подключение своих SCSS файлов
+@import "my";
