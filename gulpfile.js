@@ -69,7 +69,7 @@ gulp.task('webserver', function () {
 
 // сбор html
 gulp.task('html:build', function () {
-    gulp.src(path.src.html) // выбор всех html файлов по указанному пути
+    return gulp.src(path.src.html) // выбор всех html файлов по указанному пути
         .pipe(plumber()) // отслеживание ошибок
         .pipe(rigger()) // импорт вложений
         .pipe(gulp.dest(path.build.html)) // выкладывание готовых файлов
@@ -78,7 +78,7 @@ gulp.task('html:build', function () {
 
 // сбор стилей
 gulp.task('css:build', function () {
-    gulp.src(path.src.style) // получим main.scss
+    return gulp.src(path.src.style) // получим main.scss
         .pipe(plumber()) // для отслеживания ошибок
         .pipe(sourcemaps.init()) // инициализируем sourcemap
         .pipe(sass()) // scss -> css
@@ -93,7 +93,7 @@ gulp.task('css:build', function () {
 
 // сбор js
 gulp.task('js:build', function () {
-    gulp.src(path.src.js) // получим файл main.js
+    return gulp.src(path.src.js) // получим файл main.js
         .pipe(plumber()) // для отслеживания ошибок
         .pipe(rigger()) // импортируем все указанные файлы в main.js
         .pipe(sourcemaps.init()) //инициализируем sourcemap
@@ -105,13 +105,13 @@ gulp.task('js:build', function () {
 
 // перенос шрифтов
 gulp.task('fonts:build', function() {
-    gulp.src(path.src.fonts)
+    return gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts));
 });
 
 // обработка картинок
 gulp.task('image:build', function () {
-    gulp.src(path.src.img) // путь с исходниками картинок
+    return gulp.src(path.src.img) // путь с исходниками картинок
         .pipe(cache(imagemin([ // сжатие изображений
 		    imagemin.gifsicle({interlaced: true}),
             jpegrecompress({
