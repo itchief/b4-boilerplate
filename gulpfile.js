@@ -2,7 +2,7 @@
 
 /* параметры для gulp-autoprefixer */
 var autoprefixerList = [
-    'Chrome >= 45',
+  'Chrome >= 45',
 	'Firefox ESR',
 	'Edge >= 12',
 	'Explorer >= 10',
