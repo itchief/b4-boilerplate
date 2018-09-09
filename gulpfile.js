@@ -58,7 +58,8 @@ var gulp = require('gulp'),  // подключаем Gulp
     imagemin = require('gulp-imagemin'), // плагин для сжатия PNG, JPEG, GIF и SVG изображений
     jpegrecompress = require('imagemin-jpeg-recompress'), // плагин для сжатия jpeg	
     pngquant = require('imagemin-pngquant'), // плагин для сжатия png
-    del = require('del'); // плагин для удаления файлов и каталогов
+    del = require('del'), // плагин для удаления файлов и каталогов
+    rename = require('gulp-rename');
 
 /* задачи */
 
@@ -85,6 +86,8 @@ gulp.task('css:build', function () {
         .pipe(autoprefixer({ // добавим префиксы
             browsers: autoprefixerList
         }))
+        .pipe(gulp.dest(path.build.css))
+        .pipe(rename({suffix: '.min'}))               
         .pipe(cleanCSS()) // минимизируем CSS
         .pipe(sourcemaps.write('./')) // записываем sourcemap
         .pipe(gulp.dest(path.build.css)) // выгружаем в build
@@ -96,6 +99,8 @@ gulp.task('js:build', function () {
     return gulp.src(path.src.js) // получим файл main.js
         .pipe(plumber()) // для отслеживания ошибок
         .pipe(rigger()) // импортируем все указанные файлы в main.js
+        .pipe(gulp.dest(path.build.js))
+        .pipe(rename({suffix: '.min'}))
         .pipe(sourcemaps.init()) //инициализируем sourcemap
         .pipe(uglify()) // минимизируем js
         .pipe(sourcemaps.write('./')) //  записываем sourcemap
