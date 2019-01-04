@@ -5,7 +5,7 @@
 @import "../../../node_modules/bootstrap/scss/_functions";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/_mixins";
-@import "../../../node_modules/bootstrap/scss/_print";
+@import "../../../node_modules/bootstrap/scss/_root";
 @import "../../../node_modules/bootstrap/scss/_reboot";
 @import "../../../node_modules/bootstrap/scss/_type";
 @import "../../../node_modules/bootstrap/scss/_images";
@@ -31,11 +31,14 @@
 @import "../../../node_modules/bootstrap/scss/_media";
 @import "../../../node_modules/bootstrap/scss/_list-group";
 @import "../../../node_modules/bootstrap/scss/_close";
+@import "../../../node_modules/bootstrap/scss/_toasts";
 @import "../../../node_modules/bootstrap/scss/_modal";
 @import "../../../node_modules/bootstrap/scss/_tooltip";
 @import "../../../node_modules/bootstrap/scss/_popover";
 @import "../../../node_modules/bootstrap/scss/_carousel";
+@import "../../../node_modules/bootstrap/scss/_spinners";
 @import "../../../node_modules/bootstrap/scss/_utilities";
+@import "../../../node_modules/bootstrap/scss/_print";
 
 // Подключение своих SCSS файлов
 @import "my";
