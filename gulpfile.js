@@ -1,17 +1,5 @@
 'use strict';
 
-/* параметры для gulp-autoprefixer */
-var autoprefixerList = [
-    'Chrome >= 45',
-    'Firefox ESR',
-    'Edge >= 12',
-    'Explorer >= 10',
-    'iOS >= 9',
-    'Safari >= 9',
-    'Android >= 4.4',
-    'Opera >= 30'
-];
-
 /* пути к исходным файлам (src), к готовым файлам (build), а также к тем, за изменениями которых нужно наблюдать (watch) */
 var path = {
     build: {
@@ -23,7 +11,8 @@ var path = {
     },
     src: {
         html: 'assets/src/*.html',
-        js: 'assets/src/js/main.js',
+        js_main: 'assets/src/js/main.js',
+        js_vendor: 'assets/src/js/vendor.js',
         style: 'assets/src/style/main.scss',
         img: 'assets/src/img/**/*.*',
         fonts: 'assets/src/fonts/**/*.*'
@@ -61,7 +50,9 @@ var gulp = require('gulp'),  // подключаем Gulp
     jpegrecompress = require('imagemin-jpeg-recompress'), // плагин для сжатия jpeg	
     pngquant = require('imagemin-pngquant'), // плагин для сжатия png
     rimraf = require('gulp-rimraf'), // плагин для удаления файлов и каталогов
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    babel = require('gulp-babel'),
+    concat = require('gulp-concat');
 
 /* задачи */
 
@@ -85,9 +76,7 @@ gulp.task('css:build', function () {
         .pipe(plumber()) // для отслеживания ошибок
         .pipe(sourcemaps.init()) // инициализируем sourcemap
         .pipe(sass()) // scss -> css
-        .pipe(autoprefixer({ // добавим префиксы
-            browsers: autoprefixerList
-        }))
+        .pipe(autoprefixer())
         .pipe(gulp.dest(path.build.css))
         .pipe(rename({ suffix: '.min' }))
         .pipe(cleanCSS()) // минимизируем CSS
@@ -96,19 +85,43 @@ gulp.task('css:build', function () {
         .pipe(webserver.reload({ stream: true })); // перезагрузим сервер
 });
 
-// сбор js
-gulp.task('js:build', function () {
-    return gulp.src(path.src.js) // получим файл main.js
-        .pipe(plumber()) // для отслеживания ошибок
-        .pipe(rigger()) // импортируем все указанные файлы в main.js
-        .pipe(gulp.dest(path.build.js))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(sourcemaps.init()) //инициализируем sourcemap
-        .pipe(uglify()) // минимизируем js
-        .pipe(sourcemaps.write('./')) //  записываем sourcemap
-        .pipe(gulp.dest(path.build.js)) // положим готовый файл
-        .pipe(webserver.reload({ stream: true })); // перезагрузим сервер
-});
+gulp.task('js:build',
+    gulp.series(
+        function js_clean() {
+            return gulp.src(path.build.js + '**', { read: false })
+                .pipe(rimraf());
+        },
+        function js_main() {
+            return gulp.src(path.src.js_main) // получим файл main.js
+                .pipe(plumber()) // для отслеживания ошибок
+                .pipe(rigger()) // импортируем все указанные файлы в main.js
+                .pipe(babel({
+                    presets: ['@babel/env']
+                }))
+                .pipe(gulp.dest(path.build.js + 'cache/'));
+        },
+        function js_vendor() {
+            return gulp.src(path.src.js_vendor) // получим файл vendor.js
+                .pipe(plumber()) // для отслеживания ошибок
+                .pipe(rigger()) // импортируем все указанные файлы в vendor.js
+                .pipe(gulp.dest(path.build.js + 'cache/'));
+        },
+        function js_concat() {
+            return gulp.src([path.build.js + 'cache/vendor.js', path.build.js + 'cache/main.js'])
+                .pipe(concat('all.js'))
+                .pipe(gulp.dest(path.build.js));
+        },
+        function js_min() {
+            return gulp.src(path.build.js + 'all.js')
+                .pipe(rename({ suffix: '.min' }))
+                .pipe(sourcemaps.init()) //инициализируем sourcemap
+                .pipe(uglify()) // минимизируем js
+                .pipe(sourcemaps.write('./')) //  записываем sourcemap
+                .pipe(gulp.dest(path.build.js)) // положим готовый файл
+                .pipe(webserver.reload({ stream: true })); // перезагрузим сервер)
+        }
+    )
+);
 
 // перенос шрифтов
 gulp.task('fonts:build', function () {
@@ -168,5 +181,5 @@ gulp.task('watch', function () {
 // задача по умолчанию
 gulp.task('default', gulp.series(
     'build',
-    gulp.parallel('webserver','watch')      
+    gulp.parallel('webserver', 'watch')
 ));
