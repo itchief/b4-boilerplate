@@ -10,7 +10,7 @@ var path = {
         fonts: 'assets/build/fonts/'
     },
     src: {
-        html: 'assets/src/*.html',
+        html: 'assets/src/pages/**/*.html',
         js: 'assets/src/js/main.js',
         style: 'assets/src/style/main.scss',
         img: 'assets/src/img/**/*.*',
