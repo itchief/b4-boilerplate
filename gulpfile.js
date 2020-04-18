@@ -48,7 +48,7 @@ var gulp = require('gulp'),  // подключаем Gulp
     imagemin = require('gulp-imagemin'), // плагин для сжатия PNG, JPEG, GIF и SVG изображений
     jpegrecompress = require('imagemin-jpeg-recompress'), // плагин для сжатия jpeg	
     pngquant = require('imagemin-pngquant'), // плагин для сжатия png
-    rimraf = require('gulp-rimraf'), // плагин для удаления файлов и каталогов
+    del = require('del'), // плагин для удаления файлов и каталогов
     rename = require('gulp-rename');
 
 /* задачи */
@@ -120,8 +120,7 @@ gulp.task('image:build', function () {
 
 // удаление каталога build 
 gulp.task('clean:build', function () {
-    return gulp.src(path.clean, { read: false })
-        .pipe(rimraf());
+    return del(path.clean);
 });
 
 // очистка кэша
