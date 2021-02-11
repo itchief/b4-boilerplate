@@ -21,7 +21,7 @@ var path = {
         js: 'assets/src/js/**/*.js',
         css: 'assets/src/style/**/*.scss',
         img: 'assets/src/img/**/*.*',
-        fonts: 'assets/srs/fonts/**/*.*'
+        fonts: 'assets/src/fonts/**/*.*'
     },
     clean: './assets/build/*'
 };
