@@ -58,12 +58,12 @@ const sass = gulpSass(compilerSass);
 /* задачи */
 
 // запуск сервера
-gulp.task('webserver', function () {
+gulp.task('webserver', () => {
   webserver(config);
 });
 
 // сбор html
-gulp.task('html:build', function () {
+gulp.task('html:build', () => {
   return gulp.src(path.src.html) // выбор всех html файлов по указанному пути
     .pipe(plumber()) // отслеживание ошибок
     .pipe(rigger()) // импорт вложений
@@ -72,7 +72,7 @@ gulp.task('html:build', function () {
 });
 
 // сбор стилей
-gulp.task('css:build', function () {
+gulp.task('css:build', () => {
   return gulp.src(path.src.style) // получим main.scss
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(sourcemaps.init()) // инициализируем sourcemap
@@ -87,7 +87,7 @@ gulp.task('css:build', function () {
 });
 
 // сбор js
-gulp.task('js:build', function () {
+gulp.task('js:build', () => {
   return gulp.src(path.src.js) // получим файл main.js
     .pipe(plumber()) // для отслеживания ошибок
     .pipe(rigger()) // импортируем все указанные файлы в main.js
@@ -101,7 +101,7 @@ gulp.task('js:build', function () {
 });
 
 // перенос шрифтов
-gulp.task('fonts:build', function () {
+gulp.task('fonts:build', () => {
   return gulp.src(path.src.fonts)
     .pipe(gulp.dest(path.build.fonts));
 });
@@ -109,7 +109,7 @@ gulp.task('fonts:build', function () {
 
 
 // обработка картинок
-gulp.task('image:build', function () {
+gulp.task('image:build', () => {
   return gulp.src(path.src.img) // путь с исходниками картинок
     .pipe(imagemin([ // сжатие изображений
       gifsicle({interlaced: true}),
@@ -121,12 +121,12 @@ gulp.task('image:build', function () {
 });
 
 // удаление каталога build
-gulp.task('clean:build', function () {
+gulp.task('clean:build', () => {
   return del(path.clean);
 });
 
 // очистка кэша
-gulp.task('cache:clear', function () {
+gulp.task('cache:clear', () => {
   cache.clearAll();
 });
 
@@ -144,7 +144,7 @@ gulp.task('build',
 );
 
 // запуск задач при изменении файлов
-gulp.task('watch', function () {
+gulp.task('watch', () => {
   gulp.watch(path.watch.html, gulp.series('html:build'));
   gulp.watch(path.watch.css, gulp.series('css:build'));
   gulp.watch(path.watch.js, gulp.series('js:build'));
