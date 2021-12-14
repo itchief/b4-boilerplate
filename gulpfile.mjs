@@ -49,7 +49,7 @@ import del from 'del'; // плагин для удаления файлов и �
 import rename from 'gulp-rename';
 import imagemin from 'gulp-imagemin'; // плагин для сжатия PNG, JPEG, GIF и SVG изображений
 import gifsicle from 'imagemin-gifsicle';
-import mozjpeg from 'imagemin-gifsicle';
+import mozjpeg from 'imagemin-mozjpeg';
 import optipng from 'imagemin-optipng';
 //import svgo from 'imagemin-svgo';
 
