@@ -1,5 +1,3 @@
-'use strict';
-
 /* пути к исходным файлам (src), к готовым файлам (build), а также к тем, за изменениями которых нужно наблюдать (watch) */
 var path = {
   build: {
@@ -26,19 +24,11 @@ var path = {
   clean: './assets/build/*'
 };
 
-/* настройки сервера */
-var config = {
-  server: {
-    baseDir: './assets/build'
-  },
-  notify: false
-};
-
-import gulp from 'gulp'; // подключаем Gulp
-import webserver from 'browser-sync'; // сервер для работы и автоматического обновления страниц
-import plumber from 'gulp-plumber'; // модуль для отслеживания ошибок
+// Gulp
+import gulp from 'gulp';
+// сервер для работы и автоматического обновления страниц
+import sync from 'browser-sync';
 import rigger from 'gulp-rigger'; // модуль для импорта содержимого одного файла в другой
-import sourcemaps from 'gulp-sourcemaps'; // модуль для генерации карты исходных файлов
 import compilerSass from 'sass';
 import gulpSass from 'gulp-sass'; // модуль для компиляции SASS (SCSS) в CSS
 import autoprefixer from 'gulp-autoprefixer'; // модуль для автоматической установки автопрефиксов
@@ -52,52 +42,52 @@ import gifsicle from 'imagemin-gifsicle';
 import mozjpeg from 'imagemin-mozjpeg';
 import optipng from 'imagemin-optipng';
 //import svgo from 'imagemin-svgo';
+import notify from 'gulp-notify';
 
+const browserSync = sync.create();
 const sass = gulpSass(compilerSass);
 
 /* задачи */
 
 // запуск сервера
-gulp.task('webserver', () => {
-  webserver(config);
+gulp.task('browser-sync', () => {
+  browserSync.init({
+    server: {
+      baseDir: './assets/build'
+    },
+    notify: false
+  })
 });
 
 // сбор html
 gulp.task('html:build', () => {
   return gulp.src(path.src.html) // выбор всех html файлов по указанному пути
-    .pipe(plumber()) // отслеживание ошибок
     .pipe(rigger()) // импорт вложений
     .pipe(gulp.dest(path.build.html)) // выкладывание готовых файлов
-    .pipe(webserver.reload({ stream: true })); // перезагрузка сервера
+    .pipe(browserSync.reload({ stream: true })); // перезагрузка сервера
 });
 
 // сбор стилей
 gulp.task('css:build', () => {
   return gulp.src(path.src.style) // получим main.scss
-    .pipe(plumber()) // для отслеживания ошибок
-    .pipe(sourcemaps.init()) // инициализируем sourcemap
-    .pipe(sass()) // scss -> css
+    .pipe(sass({outputStyle: 'expanded'}).on('error', notify.onError())) // scss -> css
     .pipe(autoprefixer()) // добавим префиксы
     .pipe(gulp.dest(path.build.css))
-    .pipe(rename({ suffix: '.min' }))
+    .pipe(rename({suffix: '.min'}))
     .pipe(cleanCss()) // минимизируем CSS
-    .pipe(sourcemaps.write('./')) // записываем sourcemap
-    .pipe(gulp.dest(path.build.css)) // выгружаем в build
-    .pipe(webserver.reload({ stream: true })); // перезагрузим сервер
+    .pipe(gulp.dest(path.build.css))
+    .pipe(browserSync.stream()); // перезагрузим сервер
 });
 
 // сбор js
 gulp.task('js:build', () => {
   return gulp.src(path.src.js) // получим файл main.js
-    .pipe(plumber()) // для отслеживания ошибок
     .pipe(rigger()) // импортируем все указанные файлы в main.js
     .pipe(gulp.dest(path.build.js))
     .pipe(rename({ suffix: '.min' }))
-    .pipe(sourcemaps.init()) //инициализируем sourcemap
     .pipe(uglify.default()) // минимизируем js
-    .pipe(sourcemaps.write('./')) //  записываем sourcemap
     .pipe(gulp.dest(path.build.js)) // положим готовый файл
-    .pipe(webserver.reload({ stream: true })); // перезагрузим сервер
+    .pipe(browserSync.reload({ stream: true })); // перезагрузим сервер
 });
 
 // перенос шрифтов
@@ -155,5 +145,5 @@ gulp.task('watch', () => {
 // задача по умолчанию
 gulp.task('default', gulp.series(
   'build',
-  gulp.parallel('webserver','watch')
+  gulp.parallel('browser-sync','watch')
 ));
