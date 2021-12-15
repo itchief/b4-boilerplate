@@ -41,7 +41,7 @@ import imagemin from 'gulp-imagemin'; // плагин для сжатия PNG, J
 import gifsicle from 'imagemin-gifsicle';
 import mozjpeg from 'imagemin-mozjpeg';
 import optipng from 'imagemin-optipng';
-//import svgo from 'imagemin-svgo';
+import svgo from 'imagemin-svgo';
 import notify from 'gulp-notify';
 
 const browserSync = sync.create();
@@ -100,14 +100,14 @@ gulp.task('fonts:build', () => {
 
 // обработка картинок
 gulp.task('image:build', () => {
-  return gulp.src(path.src.img) // путь с исходниками картинок
-    .pipe(imagemin([ // сжатие изображений
-      gifsicle({interlaced: true}),
-      mozjpeg({quality: 75, progressive: true}),
-      optipng({optimizationLevel: 5}),
-      //svgo({ plugins: [{ removeViewBox: false }] })
+  return gulp.src('assets/src/img/**/*')
+    .pipe(imagemin([
+      gifsicle({ interlaced: true }),
+      mozjpeg({ quality: 75, progressive: true }),
+      optipng({ optimizationLevel: 5 }),
+      svgo()
     ]))
-    .pipe(gulp.dest(path.build.img)); // выгрузка готовых файлов
+    .pipe(gulp.dest('assets/build/img/'))
 });
 
 // удаление каталога build
